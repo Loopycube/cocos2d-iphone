@@ -513,7 +513,10 @@ enum {
 	
 	id<CCRGBAProtocol> item;
 	CCARRAY_FOREACH(children_, item)
-		[item setOpacity:opacity_];
+  {
+    if( [item respondsToSelector:@selector(setOpacity:)] )
+      [item setOpacity:opacity_];
+  }
 }
 
 -(void) setColor:(ccColor3B)color
