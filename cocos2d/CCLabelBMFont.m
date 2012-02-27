@@ -516,7 +516,9 @@ typedef struct _KerningHashElement
         NSString *multilineString = @"", *lastWord = @"";
         int line = 1, i = 0;
         NSUInteger stringLength = [self.string length];
-        float startOfLine = -1, startOfWord = -1;
+      
+        float startUndefined = FLT_MIN;
+        float startOfLine = startUndefined, startOfWord = startUndefined;
         int skip = 0;
         //Go through each character and insert line breaks as necessary
         for (int j = 0; j < [children_ count]; j++) {
@@ -532,9 +534,9 @@ typedef struct _KerningHashElement
             
             unichar character = [self.string characterAtIndex:i];
             
-            if (startOfWord == -1)
+            if (startOfWord == startUndefined)
                 startOfWord = characterSprite.position.x - characterSprite.contentSize.width/2;
-            if (startOfLine == -1)
+            if (startOfLine == startUndefined)
                 startOfLine = startOfWord;
             
             //Character is a line break
@@ -544,9 +546,9 @@ typedef struct _KerningHashElement
                 lastWord = [[lastWord stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] stringByAppendingFormat:@"%C", character];
                 multilineString = [multilineString stringByAppendingString:lastWord];
                 lastWord = @"";
-                startOfWord = -1;
+                startOfWord = startUndefined;
                 line++;
-                startOfLine = -1;
+                startOfLine = startUndefined;
                 i++;
                 
                 //CCLabelBMFont do not have a character for new lines, so do NOT "continue;" in the for loop. Process the next character
@@ -554,9 +556,9 @@ typedef struct _KerningHashElement
                     break;
                 character = [self.string characterAtIndex:i];
                 
-                if (startOfWord == -1)
+                if (startOfWord == startUndefined)
                     startOfWord = characterSprite.position.x - characterSprite.contentSize.width/2;
-                if (startOfLine == -1)
+                if (startOfLine == startUndefined)
                     startOfLine = startOfWord;
             }
             
@@ -567,7 +569,7 @@ typedef struct _KerningHashElement
                 lastWord = [lastWord stringByAppendingFormat:@"%C", character];
                 multilineString = [multilineString stringByAppendingString:lastWord];
                 lastWord = @"";
-                startOfWord = -1;
+                startOfWord = startUndefined;
                 i++;
                 continue;
             }
@@ -580,7 +582,7 @@ typedef struct _KerningHashElement
                 NSString *trimmedString = [multilineString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                 multilineString = [trimmedString stringByAppendingString:@"\n"];
                 line++;
-                startOfLine = -1;
+                startOfLine = startUndefined;
                 i++;
                 continue;
             } else {
