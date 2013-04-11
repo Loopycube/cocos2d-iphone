@@ -223,8 +223,11 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 	[director reshapeProjection:size_];
 
 	// Avoid flicker. Issue #350
-	NSThread *thread = [director runningThread];
-	[director performSelector:@selector(drawScene) onThread:thread withObject:nil waitUntilDone:YES];
+  
+// Case 5717. This would cause OpenGL calls to be run after the director had been stopped
+// when putting the device to slep while the app is running.
+//	NSThread *thread = [director runningThread];
+//	[director performSelector:@selector(drawScene) onThread:thread withObject:nil waitUntilDone:YES];
 }
 
 - (void) swapBuffers
