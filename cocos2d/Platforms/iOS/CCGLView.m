@@ -214,6 +214,9 @@ Copyright (C) 2008 Apple Inc. All Rights Reserved.
 
 - (void) layoutSubviews
 {
+  if( ![CCDirector sharedDirector].isAnimating )
+    return;
+  
 	[renderer_ resizeFromLayer:(CAEAGLLayer*)self.layer];
 
 	size_ = [renderer_ backingSize];
